@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicJobController;
 use App\Http\Controllers\StripeJobPaymentController;
-use App\Http\Controllers\StripeWebhookController;
+// use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\Employer\DashboardController;
 use App\Http\Controllers\Candidate\DashboardController as CandidateDashboardController;
@@ -29,7 +29,7 @@ Route::get('/jobs', [PublicJobController::class, 'index'])->name('jobs.index');
 Route::get('/jobs/{job}', [PublicJobController::class, 'show'])->name('jobs.show');
 Route::post('/jobs/{job}/apply', [ApplicationController::class, 'store'])->name('jobs.apply');
 Route::post('/employer/jobs/{job}/pay', [StripeJobPaymentController::class, 'checkout'])->name('employer.jobs.pay');
-Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
+// Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 Route::get('/subscribe', [SubscriptionController::class, 'checkout'])->name('subscribe');
 
 /*
