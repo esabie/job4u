@@ -28,7 +28,7 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        return view('employer.dashboard', compact(
+        return view('Employer.dashboard', compact(
             'totalJobs',
             'activeJobs',
             'applicationsReceived',
