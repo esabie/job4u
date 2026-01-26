@@ -17,7 +17,7 @@ class DashboardController extends Controller
             ->latest()
             ->get();
 
-        return view('candidate.dashboard', [
+        return view('Candidate.dashboard', [
             'applications' => $applications,
             'totalApplications' => $applications->count(),
             'shortlisted' => $applications->where('status', 'shortlisted')->count(),
