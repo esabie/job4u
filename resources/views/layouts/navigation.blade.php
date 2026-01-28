@@ -1,4 +1,6 @@
-<nav class="bg-white border-b border-gray-200">
+<nav x-data="{ open: false }"
+     class="bg-white border-b border-gray-200 relative">
+
     <div class="max-w-7xl mx-auto px-6">
         <div class="flex items-center justify-between h-16">
 
@@ -13,34 +15,18 @@
                 </a>
             </div>
 
-            <!-- CENTER: Navigation -->
+            <!-- CENTER: Navigation (desktop) -->
             <div class="hidden md:flex items-center gap-10 text-sm font-semibold text-slate-900">
-
-                
-
-                <a href="{{ route('register') }}"
-                   class="hover:text-[#1E3A6D] transition">
-                    Job Seekers
-                </a>
-
-                <a href="{{ route('register') }}"
-                   class="hover:text-[#1E3A6D] transition">
-                    Employer
-                </a>
-
-                <a href="{{ route('jobs.index') }}"
-                   class="hover:text-[#1E3A6D] transition">
-                    Find Jobs
-                </a>
-
+                <a href="{{ route('register') }}" class="hover:text-[#1E3A6D]">Job Seekers</a>
+                <a href="{{ route('register') }}" class="hover:text-[#1E3A6D]">Employer</a>
+                <a href="{{ route('jobs.index') }}" class="hover:text-[#1E3A6D]">Find Jobs</a>
             </div>
 
-            <!-- RIGHT: Candidate / Employer -->
+            <!-- RIGHT: Login (desktop) -->
             <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-900">
-
                 <a href="{{ route('login') }}"
                    class="flex items-center gap-2 hover:text-[#1E3A6D] transition">
-                    <svg xmlns="http://www.w3.org/2000/svg"
+                   <svg xmlns="http://www.w3.org/2000/svg"
                          class="h-5 w-5"
                          fill="none"
                          viewBox="0 0 24 24"
@@ -52,12 +38,15 @@
                     </svg>
                     Login
                 </a>
-
             </div>
 
             <!-- MOBILE MENU BUTTON -->
             <div class="md:hidden">
-                <button class="text-slate-700">
+                <button
+                    @click="open = !open"
+                    class="text-slate-700"
+                    aria-label="Toggle menu"
+                >
                     <svg xmlns="http://www.w3.org/2000/svg"
                          class="h-6 w-6"
                          fill="none"
@@ -73,4 +62,33 @@
 
         </div>
     </div>
+
+    <!-- ✅ MOBILE MENU (GOES HERE) -->
+    <div
+        x-show="open"
+        x-transition
+        @click.outside="open = false"
+        class="md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-200 shadow-lg z-50"
+    >
+        <div class="flex flex-col p-6 space-y-4 text-sm font-semibold text-slate-900">
+
+            <a href="{{ route('register') }}" class="hover:text-[#1E3A6D]">
+                Job Seekers
+            </a>
+
+            <a href="{{ route('register') }}" class="hover:text-[#1E3A6D]">
+                Employer
+            </a>
+
+            <a href="{{ route('jobs.index') }}" class="hover:text-[#1E3A6D]">
+                Find Jobs
+            </a>
+
+            <a href="{{ route('login') }}" class="hover:text-[#1E3A6D]">
+                Login
+            </a>
+
+        </div>
+    </div>
+
 </nav>
