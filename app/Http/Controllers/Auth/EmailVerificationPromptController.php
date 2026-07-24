@@ -14,8 +14,18 @@ class EmailVerificationPromptController extends Controller
      */
     public function __invoke(Request $request): RedirectResponse|View
     {
-        return $request->user()->hasVerifiedEmail()
-                    ? redirect()->intended(route('dashboard', absolute: false))
-                    : view('auth.verify-email');
+        if ($request->user()->hasVerifiedEmail()) {
+            $this->logDebug('Email verification prompt skipped, already verified', [
+                'user_id' => $request->user()->id,
+            ]);
+
+            return redirect()->intended(route('dashboard', absolute: false));
+        }
+
+        $this->logDebug('Email verification prompt shown', [
+            'user_id' => $request->user()->id,
+        ]);
+
+        return view('auth.verify-email');
     }
 }

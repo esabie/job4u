@@ -26,6 +26,8 @@ class User extends Authenticatable
         'email',
         'role',
         'password',
+        'notify_application_updates',
+        'notify_job_alerts',
     ];
 
     /**
@@ -48,6 +50,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'notify_application_updates' => 'boolean',
+            'notify_job_alerts' => 'boolean',
         ];
     }
 
@@ -74,6 +78,11 @@ class User extends Authenticatable
     public function applications()
     {
         return $this->hasMany(Application::class);
+    }
+
+    public function jobAlerts()
+    {
+        return $this->hasMany(JobAlert::class);
     }
 
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Job extends Model
 {
@@ -16,7 +17,9 @@ class Job extends Model
         'user_id',
         'title',
         'company_name',
+        'company_logo',
         'location',
+        'work_arrangement',
         'employment_type',
         'category',
         'currency',
@@ -49,5 +52,17 @@ class Job extends Model
     public function applications()
     {
         return $this->hasMany(Application::class);
+    }
+
+    public function questions()
+    {
+        return $this->hasMany(JobQuestion::class)->orderBy('sort_order');
+    }
+
+    public function companyLogoUrl(): ?string
+    {
+        return $this->company_logo
+            ? Storage::disk('public')->url($this->company_logo)
+            : null;
     }
 }

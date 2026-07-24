@@ -8,13 +8,21 @@
         <!-- ===================== -->
         <!-- HEADER -->
         <!-- ===================== -->
-        <div class="mb-10">
-            <h1 class="text-3xl font-extrabold text-[#1E3A6D]">
-                Welcome, {{ auth()->user()->name }}
-            </h1>
-            <p class="text-slate-600 mt-1">
-                Track your job applications and progress.
-            </p>
+        <div class="mb-10 flex items-start justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-[#1E3A6D]">
+                    Welcome, {{ auth()->user()->name }}
+                </h1>
+                <p class="text-slate-600 mt-1">
+                    Track your job applications and progress.
+                </p>
+            </div>
+
+            <a href="{{ route('jobs.index') }}"
+               class="shrink-0 px-6 py-3 rounded-xl bg-[#1E3A6D] text-white font-semibold
+                      hover:bg-blue-700 transition shadow-md">
+                Find a Job
+            </a>
         </div>
 
         <!-- ===================== -->

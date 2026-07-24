@@ -28,12 +28,20 @@ class ConfirmablePasswordController extends Controller
             'email' => $request->user()->email,
             'password' => $request->password,
         ])) {
+            $this->logWarning('Password confirmation failed', [
+                'user_id' => $request->user()->id,
+            ]);
+
             throw ValidationException::withMessages([
                 'password' => __('auth.password'),
             ]);
         }
 
         $request->session()->put('auth.password_confirmed_at', time());
+
+        $this->logInfo('Password confirmed', [
+            'user_id' => $request->user()->id,
+        ]);
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

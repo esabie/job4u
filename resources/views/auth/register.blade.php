@@ -1,7 +1,5 @@
 <x-guest-layout>
 
-<section
-    <!-- Logo -->
     <div class="flex justify-center mb-8">
         <img
             src="{{ asset('images/logo.jpg') }}"
@@ -10,7 +8,18 @@
         />
     </div>
 
-    <form method="POST" action="{{ route('register') }}" class="space-y-5">
+    @if ($errors->any())
+        <div class="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <p class="font-semibold">Please fix the following:</p>
+            <ul class="mt-2 list-disc space-y-1 pl-5">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form method="POST" action="{{ route('register') }}" data-loader-message="Creating your account..." class="space-y-5">
         @csrf
 
         <div>
@@ -27,6 +36,7 @@
                        px-4 py-3 focus:ring-2 focus:ring-[#1E3A6D]/30
                        focus:border-[#1E3A6D]"
             />
+            <x-input-error :messages="$errors->get('name')" class="mt-1" />
         </div>
 
         <div>
@@ -42,6 +52,7 @@
                        px-4 py-3 focus:ring-2 focus:ring-[#1E3A6D]/30
                        focus:border-[#1E3A6D]"
             />
+            <x-input-error :messages="$errors->get('email')" class="mt-1" />
         </div>
 
         <div>
@@ -50,13 +61,15 @@
             </label>
             <select
                 name="role"
+                required
                 class="w-full rounded-xl border border-slate-300
                        px-4 py-3 focus:ring-2 focus:ring-[#1E3A6D]/30
                        focus:border-[#1E3A6D]"
             >
-                <option value="candidate">Job Seeker</option>
-                <option value="employer">Employer</option>
+                <option value="candidate" @selected(old('role', 'candidate') === 'candidate')>Job Seeker</option>
+                <option value="employer" @selected(old('role') === 'employer')>Employer</option>
             </select>
+            <x-input-error :messages="$errors->get('role')" class="mt-1" />
         </div>
 
         <div>
@@ -71,6 +84,7 @@
                        px-4 py-3 focus:ring-2 focus:ring-[#1E3A6D]/30
                        focus:border-[#1E3A6D]"
             />
+            <x-input-error :messages="$errors->get('password')" class="mt-1" />
         </div>
 
         <div>
@@ -85,12 +99,14 @@
                        px-4 py-3 focus:ring-2 focus:ring-[#1E3A6D]/30
                        focus:border-[#1E3A6D]"
             />
+            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1" />
         </div>
 
         <button
             type="submit"
-            class="w-full bg-[#1E3A6D] text-white py-3 rounded-xl
-                   font-semibold hover:bg-[#162d57] transition"
+            data-loading-text="Creating account..."
+            class="inline-flex w-full items-center justify-center gap-2 bg-[#1E3A6D] text-white py-3 rounded-xl
+                   font-semibold hover:bg-[#162d57] transition disabled:cursor-wait disabled:opacity-80"
         >
             Create Account
         </button>

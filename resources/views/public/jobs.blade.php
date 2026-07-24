@@ -20,29 +20,27 @@
 <!-- SEARCH BAR -->
 <!-- ===================== -->
 <section class="max-w-7xl mx-auto px-6 -mt-8 relative z-10">
-    <div class="bg-white rounded-2xl p-6 shadow-lg
-                flex flex-col md:flex-row gap-4 items-center">
+    <form method="GET"
+          action="{{ route('jobs.index') }}"
+          class="bg-white rounded-2xl p-6 shadow-lg
+                 flex flex-col md:flex-row gap-4 items-center">
 
         <input
             type="text"
-            placeholder="Job title, keyword, or company"
+            name="q"
+            value="{{ request('q') }}"
+            placeholder="Job title, keyword, company, or work type (Remote, Hybrid...)"
             class="w-full md:flex-1 px-5 py-3 rounded-xl border border-gray-300
                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
 
-        <input
-            type="text"
-            placeholder="Location"
-            class="w-full md:w-56 px-5 py-3 rounded-xl border border-gray-300
-                   focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        />
-
         <button
+            type="submit"
             class="w-full md:w-auto px-12 py-3 rounded-xl bg-[#1E3A6D] text-white font-semibold
                    hover:bg-blue-700 transition shadow">
             Search Jobs
         </button>
-    </div>
+    </form>
 </section>
 
 <!-- ===================== -->
@@ -66,11 +64,7 @@
                 <div class="flex items-start justify-between">
 
                     <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-blue-50
-                                    flex items-center justify-center
-                                    text-[#1E3A6D] font-bold text-sm">
-                            {{ strtoupper(substr($job->company_name, 0, 2)) }}
-                        </div>
+                        <x-company-logo :job="$job" size="md" />
 
                         <div>
                             <h3 class="text-lg font-bold text-slate-900">
@@ -83,6 +77,9 @@
 
                             <p class="mt-1 text-xs text-slate-500">
                                 {{ $job->location }} • {{ $job->employment_type }}
+                                @if ($job->work_arrangement)
+                                    • {{ $job->work_arrangement }}
+                                @endif
                             </p>
                         </div>
                     </div>
@@ -114,16 +111,17 @@
                     </p>
 
                     <div class="flex items-center gap-4">
-                        <a href="#"
+                        <a href="{{ route('jobs.show', $job) }}"
                            class="text-[#1E3A6D] font-semibold text-sm hover:underline">
                             View Job →
                         </a>
 
-                        <button
+                        <a
+                            href="{{ route('jobs.show', $job) }}#apply-form"
                             class="px-5 py-2 rounded-xl bg-[#1E3A6D] text-white
                                    text-sm font-semibold hover:bg-blue-700 transition">
                             Apply Now
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>

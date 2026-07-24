@@ -62,9 +62,15 @@
                         </span>
                     </td>
 
-                    <td class="px-6 py-4 text-right">
+                    <td class="px-6 py-4 text-right space-x-3">
+                        <a href="{{ route('employer.applications.show', $application) }}"
+                           class="text-[#1E3A6D] font-semibold hover:underline">
+                            View
+                        </a>
+
                         <form method="POST"
-                              action="{{ route('employer.applications.update', $application) }}">
+                              action="{{ route('employer.applications.update', $application) }}"
+                              class="inline-block">
                             @csrf
                             @method('PATCH')
 

@@ -180,4 +180,17 @@ return [
 
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Destructive Database Commands
+    |--------------------------------------------------------------------------
+    |
+    | When false, Artisan blocks migrate:fresh, db:wipe, migrate:refresh,
+    | migrate:reset, and migrate:rollback. Set ALLOW_DESTRUCTIVE_DB_COMMANDS=true
+    | in .env only when you intentionally want to wipe or roll back data.
+    |
+    */
+
+    'allow_destructive_commands' => env('ALLOW_DESTRUCTIVE_DB_COMMANDS', false),
+
 ];

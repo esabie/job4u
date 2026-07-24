@@ -30,6 +30,10 @@ class NewPasswordController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $this->logInfo('Password reset attempt', [
+            'email' => $request->input('email'),
+        ]);
+
         $request->validate([
             'token' => ['required'],
             'email' => ['required', 'email'],
@@ -50,6 +54,11 @@ class NewPasswordController extends Controller
                 event(new PasswordReset($user));
             }
         );
+
+        $this->logInfo('Password reset processed', [
+            'email' => $request->input('email'),
+            'status' => $status,
+        ]);
 
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can

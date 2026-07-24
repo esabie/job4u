@@ -35,13 +35,4 @@ return [
         ],
     ],
 
-    'stripe' => [
-    'key' => env('STRIPE_KEY'),
-    'secret' => env('STRIPE_SECRET'),
-    'job_post_price' => env('STRIPE_JOB_POST_PRICE'),
-    'premium_price' => env('STRIPE_PREMIUM_PRICE'),
-    'premium_plan_price_id' => env('STRIPE_PREMIUM_PRICE_ID'),
-    ],
-
-
 ];

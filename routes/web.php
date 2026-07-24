@@ -3,15 +3,16 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\PublicJobController;
-use App\Http\Controllers\StripeJobPaymentController;
-// use App\Http\Controllers\StripeWebhookController;
-use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\Candidate\JobAlertController;
 use App\Http\Controllers\Employer\DashboardController;
 use App\Http\Controllers\Candidate\DashboardController as CandidateDashboardController;
 use App\Http\Controllers\Candidate\ApplicationController as CandidateApplicationController;
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\Employer\JobController;
-use App\Http\Controllers\Employer\ApplicationController;
+use App\Http\Controllers\Employer\CompanySuggestionController;
+use App\Http\Controllers\Employer\ApplicationController as EmployerApplicationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,9 +29,6 @@ Route::get('/', function () {
 Route::get('/jobs', [PublicJobController::class, 'index'])->name('jobs.index');
 Route::get('/jobs/{job}', [PublicJobController::class, 'show'])->name('jobs.show');
 Route::post('/jobs/{job}/apply', [ApplicationController::class, 'store'])->name('jobs.apply');
-Route::post('/employer/jobs/{job}/pay', [StripeJobPaymentController::class, 'checkout'])->name('employer.jobs.pay');
-// Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
-Route::get('/subscribe', [SubscriptionController::class, 'checkout'])->name('subscribe');
 
 /*
 |--------------------------------------------------------------------------
@@ -46,12 +44,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
         Route::delete('/jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
         Route::get('/jobs/create', [JobController::class, 'create'])->name('jobs.create');
+        Route::get('/companies/suggest', CompanySuggestionController::class)->name('companies.suggest');
         Route::post('/jobs', [JobController::class, 'store'])->name('jobs.store');
         Route::get('/jobs/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit');
         Route::put('/jobs/{job}', [JobController::class, 'update'])->name('jobs.update');
         Route::delete('/jobs/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
-        Route::get('/jobs/{job}/applications', [ApplicationController::class, 'index'])->name('jobs.applications');
-        Route::patch('/applications/{application}', [ApplicationController::class, 'update'])->name('applications.update');
+        Route::get('/applications', [EmployerApplicationController::class, 'all'])->name('applications.index');
+        Route::get('/jobs/{job}/applications', [EmployerApplicationController::class, 'index'])->name('jobs.applications');
+        Route::get('/applications/{application}', [EmployerApplicationController::class, 'show'])->name('applications.show');
+        Route::patch('/applications/{application}', [EmployerApplicationController::class, 'update'])->name('applications.update');
 
     });
 
@@ -66,9 +67,21 @@ Route::middleware('auth')->group(function () {
         return redirect('/candidate/dashboard');
     })->name('dashboard');
 
-    Route::get('/candidate/dashboard', [CandidateDashboardController::class, 'index'])->name('candidate/dashboard');
+    Route::get('/candidate/dashboard', [CandidateDashboardController::class, 'index'])->name('candidate.dashboard');
+
+    Route::get('/candidate/applications', [CandidateApplicationController::class, 'index'])->name('candidate.applications.index');
 
     Route::get('/candidate/applications/{application}', [CandidateApplicationController::class, 'show'])->name('candidate.applications.show');
+
+    // Job Alerts (candidates)
+    Route::get('/candidate/alerts', [JobAlertController::class, 'index'])->name('candidate.alerts.index');
+    Route::post('/candidate/alerts', [JobAlertController::class, 'store'])->name('candidate.alerts.store');
+    Route::patch('/candidate/alerts/{jobAlert}', [JobAlertController::class, 'update'])->name('candidate.alerts.update');
+    Route::delete('/candidate/alerts/{jobAlert}', [JobAlertController::class, 'destroy'])->name('candidate.alerts.destroy');
+
+    // Settings
+    Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
+    Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
 
     // Profile (Breeze)
     Route::get('/profile', [ProfileController::class, 'edit'])

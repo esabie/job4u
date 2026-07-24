@@ -1,3 +1,109 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+[x-cloak] {
+    display: none !important;
+}
+
+.rich-text-editor .ql-toolbar {
+    border: 0;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.rich-text-editor .ql-container {
+    border: 0;
+    font-size: 1rem;
+}
+
+.rich-text-editor .ql-editor {
+    min-height: 220px;
+}
+
+.job-description strong {
+    font-weight: 700;
+}
+
+.job-description em {
+    font-style: italic;
+}
+
+.job-description u {
+    text-decoration: underline;
+}
+
+.job-description s {
+    text-decoration: line-through;
+}
+
+.job-description ul {
+    list-style: disc;
+    margin: 0.75rem 0 0.75rem 1.5rem;
+}
+
+.job-description ol {
+    list-style: decimal;
+    margin: 0.75rem 0 0.75rem 1.5rem;
+}
+
+.job-description p {
+    margin-bottom: 0.75rem;
+}
+
+.job-description h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.job-description h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.job-description h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.job-description a {
+    color: #1e3a6d;
+    text-decoration: underline;
+}
+
+.job4u-spinner {
+    transform-origin: center;
+}
+
+.job4u-spinner__arc {
+    stroke-dasharray: 70 113;
+    transform-origin: center;
+    animation: job4u-arc-spin 1s cubic-bezier(0.55, 0.15, 0.45, 0.85) infinite;
+}
+
+@keyframes job4u-arc-spin {
+    0% {
+        stroke-dashoffset: 70;
+        transform: rotate(0deg);
+    }
+
+    50% {
+        stroke-dashoffset: 18;
+    }
+
+    100% {
+        stroke-dashoffset: 70;
+        transform: rotate(360deg);
+    }
+}
+
+#global-loader {
+    opacity: 1;
+}
+
+#global-loader.opacity-0 {
+    opacity: 0;
+}

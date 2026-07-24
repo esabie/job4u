@@ -6,6 +6,8 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    @include('layouts.partials.favicon')
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -22,37 +24,41 @@
 
         <nav class="space-y-2">
 
-            <a href="{{ route('employer.dashboard') }}"
+            <a href="{{ route('dashboard') }}"
                class="flex items-center px-4 py-3 rounded-lg
                       bg-[#1E3A6D]/15 text-[#1E3A6D] font-semibold">
                 Dashboard
             </a>
 
-            <a href="{{ route('profile.edit') }}"
-               class="flex items-center px-4 py-3 rounded-lg
-                      text-slate-700 hover:bg-[#1E3A6D]/15 hover:text-[#1E3A6D] transition">
-                Profile
-            </a>
+            @can('isEmployer')
+                <a href="{{ route('employer.jobs.index') }}"
+                   class="flex items-center px-4 py-3 rounded-lg
+                          text-slate-700 hover:bg-[#1E3A6D]/15 hover:text-[#1E3A6D] transition">
+                    Jobs
+                </a>
 
-            <a href="{{ route('employer.jobs.index') }}"
-               class="flex items-center px-4 py-3 rounded-lg
-                      text-slate-700 hover:bg-[#1E3A6D]/15 hover:text-[#1E3A6D] transition">
-                Jobs
-            </a>
+                <a href="{{ route('employer.applications.index') }}"
+                   class="flex items-center px-4 py-3 rounded-lg
+                          text-slate-700 hover:bg-[#1E3A6D]/15 hover:text-[#1E3A6D] transition">
+                    Applications
+                </a>
+            @endcan
 
-            <a href="#"
-               class="flex items-center px-4 py-3 rounded-lg
-                      text-slate-700 hover:bg-[#1E3A6D]/15 hover:text-[#1E3A6D] transition">
-                Applications
-            </a>
+            @unless(auth()->user()->role === 'employer')
+                <a href="{{ route('candidate.applications.index') }}"
+                   class="flex items-center px-4 py-3 rounded-lg
+                          text-slate-700 hover:bg-[#1E3A6D]/15 hover:text-[#1E3A6D] transition">
+                    Applications
+                </a>
 
-            <a href="#"
-               class="flex items-center px-4 py-3 rounded-lg
-                      text-slate-700 hover:bg-[#1E3A6D]/15 hover:text-[#1E3A6D] transition">
-                Alerts
-            </a>
+                <a href="{{ route('candidate.alerts.index') }}"
+                   class="flex items-center px-4 py-3 rounded-lg
+                          text-slate-700 hover:bg-[#1E3A6D]/15 hover:text-[#1E3A6D] transition">
+                    Alerts
+                </a>
+            @endunless
 
-            <a href="#"
+            <a href="{{ route('settings.edit') }}"
                class="flex items-center px-4 py-3 rounded-lg
                       text-slate-700 hover:bg-[#1E3A6D]/15 hover:text-[#1E3A6D] transition">
                 Settings
@@ -73,9 +79,10 @@
                 </span>
 
                 <div class="flex items-center gap-4">
-                    <span class="text-sm text-slate-600">
+                    <a href="{{ route('profile.edit') }}"
+                       class="text-sm font-medium text-slate-600 hover:text-[#1E3A6D] transition">
                         {{ auth()->user()->name }}
-                    </span>
+                    </a>
 
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
@@ -105,6 +112,8 @@
 
     </div>
 </div>
+
+@include('layouts.partials.loading-overlay')
 
 </body>
 </html>

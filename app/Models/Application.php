@@ -29,4 +29,14 @@ class Application extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function candidate()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function answers()
+    {
+        return $this->hasMany(ApplicationAnswer::class);
+    }
 }

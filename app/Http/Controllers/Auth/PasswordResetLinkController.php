@@ -25,6 +25,10 @@ class PasswordResetLinkController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $this->logInfo('Password reset link requested', [
+            'email' => $request->input('email'),
+        ]);
+
         $request->validate([
             'email' => ['required', 'email'],
         ]);
@@ -35,6 +39,11 @@ class PasswordResetLinkController extends Controller
         $status = Password::sendResetLink(
             $request->only('email')
         );
+
+        $this->logInfo('Password reset link request processed', [
+            'email' => $request->input('email'),
+            'status' => $status,
+        ]);
 
         return $status == Password::RESET_LINK_SENT
                     ? back()->with('status', __($status))

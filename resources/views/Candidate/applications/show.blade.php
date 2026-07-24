@@ -97,15 +97,18 @@
 
         </div>
 
+        <!-- APPLICATION ANSWERS -->
+        <x-application-answers :answers="$application->answers" class="mb-8" />
+
         <!-- JOB DESCRIPTION -->
         <div class="bg-white rounded-2xl p-6 shadow-sm">
             <h3 class="font-semibold text-slate-800 mb-4">
                 Job Description
             </h3>
 
-            <p class="text-sm text-slate-600 leading-relaxed whitespace-pre-line">
-                {{ $application->job->description }}
-            </p>
+            <div class="job-description text-sm text-slate-600 leading-relaxed">
+                {!! $application->job->description !!}
+            </div>
         </div>
 
     </div>

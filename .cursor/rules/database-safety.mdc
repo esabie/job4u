@@ -1,0 +1,33 @@
+---
+description: Prevent accidental database data loss
+alwaysApply: true
+---
+
+# Database safety
+
+Never run destructive database commands unless the user explicitly asks you to in the current message.
+
+## Prohibited without explicit user approval
+
+- `php artisan migrate:fresh`
+- `php artisan migrate:refresh`
+- `php artisan migrate:reset`
+- `php artisan migrate:rollback`
+- `php artisan db:wipe`
+- `php artisan schema:drop`
+- Raw SQL that drops, truncates, or bulk-deletes rows (`DROP TABLE`, `TRUNCATE`, `DELETE FROM` without a narrow `WHERE`)
+
+## Allowed by default
+
+- `php artisan migrate` (applies pending migrations only; does not wipe data)
+- Normal CRUD through the application
+- Read-only inspection (`tinker` queries, `route:list`, etc.)
+
+## If the user approves a destructive command
+
+1. Confirm exactly what will be deleted or reset.
+2. Set `ALLOW_DESTRUCTIVE_DB_COMMANDS=true` in `.env` for that session.
+3. Run only the approved command.
+4. Set `ALLOW_DESTRUCTIVE_DB_COMMANDS=false` again afterward.
+
+Do not use `--force` to bypass Laravel's destructive-command protection.

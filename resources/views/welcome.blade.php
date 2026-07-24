@@ -5,6 +5,8 @@
     <title>Job4U – Where Opportunity Meets Talent</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    @include('layouts.partials.favicon')
+
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 

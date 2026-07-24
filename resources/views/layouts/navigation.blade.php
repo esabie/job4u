@@ -17,27 +17,58 @@
 
             <!-- CENTER: Navigation (desktop) -->
             <div class="hidden md:flex items-center gap-10 text-sm font-semibold text-slate-900">
-                <a href="{{ route('register') }}" class="hover:text-[#1E3A6D]">Job Seekers</a>
-                <a href="{{ route('register') }}" class="hover:text-[#1E3A6D]">Employer</a>
+                @guest
+                    <a href="{{ route('register') }}" class="hover:text-[#1E3A6D]">Job Seekers</a>
+                    <a href="{{ route('register') }}" class="hover:text-[#1E3A6D]">Employer</a>
+                @endguest
                 <a href="{{ route('jobs.index') }}" class="hover:text-[#1E3A6D]">Find Jobs</a>
             </div>
 
-            <!-- RIGHT: Login (desktop) -->
+            <!-- RIGHT: Auth (desktop) -->
             <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-900">
-                <a href="{{ route('login') }}"
-                   class="flex items-center gap-2 hover:text-[#1E3A6D] transition">
-                   <svg xmlns="http://www.w3.org/2000/svg"
-                         class="h-5 w-5"
-                         fill="none"
-                         viewBox="0 0 24 24"
-                         stroke="currentColor">
-                        <path stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    Login
-                </a>
+                @guest
+                    <a href="{{ route('login') }}"
+                       class="flex items-center gap-2 hover:text-[#1E3A6D] transition">
+                       <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-5 w-5"
+                             fill="none"
+                             viewBox="0 0 24 24"
+                             stroke="currentColor">
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Login
+                    </a>
+                @endguest
+
+                @auth
+                    <a href="{{ route('dashboard') }}" class="hover:text-[#1E3A6D] transition">
+                        Dashboard
+                    </a>
+
+                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 hover:text-[#1E3A6D] transition">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-5 w-5"
+                             fill="none"
+                             viewBox="0 0 24 24"
+                             stroke="currentColor">
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {{ auth()->user()->name }}
+                    </a>
+
+                    <form method="POST" action="{{ route('logout') }}" data-no-loader>
+                        @csrf
+                        <button type="submit" class="hover:text-[#1E3A6D] transition">
+                            Logout
+                        </button>
+                    </form>
+                @endauth
             </div>
 
             <!-- MOBILE MENU BUTTON -->
@@ -72,21 +103,42 @@
     >
         <div class="flex flex-col p-6 space-y-4 text-sm font-semibold text-slate-900">
 
-            <a href="{{ route('register') }}" class="hover:text-[#1E3A6D]">
-                Job Seekers
-            </a>
+            @guest
+                <a href="{{ route('register') }}" class="hover:text-[#1E3A6D]">
+                    Job Seekers
+                </a>
 
-            <a href="{{ route('register') }}" class="hover:text-[#1E3A6D]">
-                Employer
-            </a>
+                <a href="{{ route('register') }}" class="hover:text-[#1E3A6D]">
+                    Employer
+                </a>
+            @endguest
 
             <a href="{{ route('jobs.index') }}" class="hover:text-[#1E3A6D]">
                 Find Jobs
             </a>
 
-            <a href="{{ route('login') }}" class="hover:text-[#1E3A6D]">
-                Login
-            </a>
+            @guest
+                <a href="{{ route('login') }}" class="hover:text-[#1E3A6D]">
+                    Login
+                </a>
+            @endguest
+
+            @auth
+                <a href="{{ route('dashboard') }}" class="hover:text-[#1E3A6D]">
+                    Dashboard
+                </a>
+
+                <a href="{{ route('profile.edit') }}" class="hover:text-[#1E3A6D]">
+                    {{ auth()->user()->name }}
+                </a>
+
+                <form method="POST" action="{{ route('logout') }}" data-no-loader>
+                    @csrf
+                    <button type="submit" class="text-left hover:text-[#1E3A6D]">
+                        Logout
+                    </button>
+                </form>
+            @endauth
 
         </div>
     </div>

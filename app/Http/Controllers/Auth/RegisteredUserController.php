@@ -19,6 +19,8 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
+        $this->logDebug('Registration form viewed');
+
         return view('auth.register');
     }
 
@@ -29,10 +31,14 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $this->logInfo('Registration attempt', [
+            'input' => $this->sanitizedInput($request),
+        ]);
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'role' => ['required', 'in:candidate, employer'],
+            'role' => ['required', 'in:candidate,employer'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -46,6 +52,12 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+
+        $this->logInfo('User registered successfully', [
+            'user_id' => $user->id,
+            'role' => $user->role,
+            'email' => $user->email,
+        ]);
 
         return redirect(route('dashboard', absolute: false));
     }

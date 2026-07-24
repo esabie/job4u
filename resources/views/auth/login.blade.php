@@ -28,7 +28,7 @@
             <x-auth-session-status class="my-4" :status="session('status')" />
 
             <!-- Form -->
-            <form method="POST" action="{{ route('login') }}" class="mt-8 space-y-5">
+            <form method="POST" action="{{ route('login') }}" data-loader-message="Signing you in..." class="mt-8 space-y-5">
                 @csrf
 
                 <!-- Email -->
@@ -91,11 +91,12 @@
                 <!-- Submit -->
                 <button
                     type="submit"
-                    class="w-full mt-4 px-6 py-3 rounded-xl
+                    data-loading-text="Signing in..."
+                    class="inline-flex w-full items-center justify-center gap-2 mt-4 px-6 py-3 rounded-xl
                            bg-[#1E3A6D] text-white font-semibold
                            hover:bg-[#162E56] hover:-translate-y-0.5
                            transition-all duration-200
-                           shadow-md hover:shadow-lg">
+                           shadow-md hover:shadow-lg disabled:cursor-wait disabled:opacity-80 disabled:hover:translate-y-0">
                     Sign In
                 </button>
             </form>

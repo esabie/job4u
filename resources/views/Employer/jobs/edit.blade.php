@@ -25,6 +25,8 @@
     <!-- FORM -->
     <form method="POST"
           action="{{ route('employer.jobs.update', $job) }}"
+          enctype="multipart/form-data"
+          data-loader-message="Saving your changes..."
           class="bg-white rounded-3xl shadow-sm border p-10 space-y-10">
         @csrf
         @method('PUT')
@@ -47,10 +49,14 @@
 
                 <div>
                     <label class="block text-sm font-semibold mb-2">Company Name</label>
-                    <input type="text" name="company_name"
-                           value="{{ old('company_name', $job->company_name) }}"
-                           class="w-full rounded-xl border-gray-300 px-4 py-3"
-                           required>
+                    <x-company-name-input :value="old('company_name', $job->company_name)" />
+                    @error('company_name')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="md:col-span-2">
+                    <x-company-logo-upload :job="$job" />
                 </div>
 
                 <div>
@@ -59,6 +65,10 @@
                            value="{{ old('location', $job->location) }}"
                            class="w-full rounded-xl border-gray-300 px-4 py-3"
                            required>
+                </div>
+
+                <div>
+                    <x-work-arrangement-select :value="$job->work_arrangement" />
                 </div>
 
                 <div>
@@ -108,9 +118,15 @@
         <!-- DESCRIPTION -->
         <div>
             <h2 class="text-lg font-bold mb-6">Job Description</h2>
-            <textarea name="description" rows="7"
-                      class="w-full rounded-xl border-gray-300 px-4 py-4"
-                      required>{{ $job->description }}</textarea>
+            <x-rich-text-editor :value="old('description', $job->description)" />
+            @error('description')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <!-- APPLICATION QUESTIONS -->
+        <div>
+            <x-job-questions-builder :questions="$job->questions" />
         </div>
 
         <!-- STATUS -->
@@ -131,8 +147,10 @@
             </a>
 
             <button
-                class="px-8 py-3 rounded-xl bg-[#1E3A6D] text-white font-semibold
-                       hover:bg-blue-700 transition">
+                type="submit"
+                data-loading-text="Saving..."
+                class="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-xl bg-[#1E3A6D] text-white font-semibold
+                       hover:bg-blue-700 transition disabled:cursor-wait disabled:opacity-80">
                 Save Changes
             </button>
         </div>

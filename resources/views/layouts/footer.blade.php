@@ -65,12 +65,6 @@
                             Post a Job
                         </a>
                     </li>
-                    <li>
-                        <a href="#"
-                           class="hover:text-[#55B84D] transition">
-                            Premium Listings
-                        </a>
-                    </li>
                 </ul>
             </div>
 

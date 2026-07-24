@@ -16,6 +16,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
+        $this->logDebug('Login form viewed');
+
         return view('auth.login');
     }
 
@@ -24,9 +26,18 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        $this->logInfo('Login attempt', [
+            'email' => $request->input('email'),
+            'remember' => $request->boolean('remember'),
+        ]);
+
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        $this->logInfo('User logged in', [
+            'user_id' => Auth::id(),
+        ]);
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
@@ -36,11 +47,17 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $userId = Auth::id();
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+
+        $this->logInfo('User logged out', [
+            'user_id' => $userId,
+        ]);
 
         return redirect('/');
     }

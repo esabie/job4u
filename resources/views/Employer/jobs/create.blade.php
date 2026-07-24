@@ -10,11 +10,11 @@
     <div class="mb-10 flex items-start justify-between">
         <div>
             <h1 class="text-4xl font-extrabold text-[#1E3A6D]">
-                Post a Premium Listing
+                Post a Job
             </h1>
             <p class="mt-2 text-slate-600 max-w-xl">
-                Promote high-priority roles with enhanced visibility and access to a stronger candidate
-                pool. Premium Listings are built for speed, reach and quality hiring outcomes.
+                Share your open role with candidates on Job4U. Add the key details below and publish
+                when you are ready to start receiving applications.
             </p>
         </div>
 
@@ -30,6 +30,8 @@
     <!-- ===================== -->
     <form method="POST"
           action="{{ route('employer.jobs.store') }}"
+          enctype="multipart/form-data"
+          data-loader-message="Publishing your listing..."
           class="bg-white rounded-3xl shadow-sm border p-10 space-y-10">
         @csrf
 
@@ -67,15 +69,15 @@
                     <label class="block text-sm font-semibold text-slate-700 mb-2">
                         Company Name
                     </label>
-                    <input
-                        type="text"
-                        name="company_name"
-                        value="{{ old('company_name') }}"
-                        placeholder="e.g. Tech Company Ltd"
-                        class="w-full rounded-xl border-gray-300 px-4 py-3
-                               focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        required
-                    >
+                    <x-company-name-input :value="old('company_name')" />
+                    @error('company_name')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Company Logo -->
+                <div class="md:col-span-2">
+                    <x-company-logo-upload />
                 </div>
 
                 <!-- Location -->
@@ -92,6 +94,11 @@
                                focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         required
                     >
+                </div>
+
+                <!-- Work Arrangement -->
+                <div>
+                    <x-work-arrangement-select />
                 </div>
 
                 <!-- Employment Type -->
@@ -142,7 +149,7 @@
         <!-- ===================== -->
         <div>
             <h2 class="text-lg font-bold text-slate-900 mb-6">
-                Salary Range (Optional)
+                Salary Range Per Month(Optional)
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -232,14 +239,17 @@
                 Job Description
             </h2>
 
-            <textarea
-                name="description"
-                rows="7"
-                placeholder="Describe the role, responsibilities, and requirements..."
-                class="w-full rounded-xl border-gray-300 px-4 py-4
-                       focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-            >{{ old('description') }}</textarea>
+            <x-rich-text-editor :value="old('description')" />
+            @error('description')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <!-- ===================== -->
+        <!-- APPLICATION QUESTIONS -->
+        <!-- ===================== -->
+        <div>
+            <x-job-questions-builder />
         </div>
 
         <!-- ===================== -->
@@ -255,8 +265,9 @@
 
             <button
                 type="submit"
-                class="px-10 py-3 rounded-xl bg-[#1E3A6D] text-white
-                       font-semibold hover:bg-blue-700 transition shadow-md">
+                data-loading-text="Publishing..."
+                class="inline-flex items-center justify-center gap-2 px-10 py-3 rounded-xl bg-[#1E3A6D] text-white
+                       font-semibold hover:bg-blue-700 transition shadow-md disabled:cursor-wait disabled:opacity-80">
                 Publish Listing
             </button>
 

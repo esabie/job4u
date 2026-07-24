@@ -67,12 +67,17 @@
 
                             <!-- JOB INFO -->
                             <td class="px-6 py-4">
-                                <p class="font-semibold text-slate-900">
-                                    {{ $job->title }}
-                                </p>
-                                <p class="text-slate-500 text-xs">
-                                    {{ $job->location }} • {{ $job->employment_type }}
-                                </p>
+                                <div class="flex items-center gap-3">
+                                    <x-company-logo :job="$job" size="sm" />
+                                    <div>
+                                        <p class="font-semibold text-slate-900">
+                                            {{ $job->title }}
+                                        </p>
+                                        <p class="text-slate-500 text-xs">
+                                            {{ $job->location }} • {{ $job->employment_type }}
+                                        </p>
+                                    </div>
+                                </div>
                             </td>
 
                             <!-- CATEGORY -->

@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\Candidate;
-use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Application;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -12,10 +12,18 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
+        $this->logDebug('Candidate dashboard viewed', [
+            'candidate_id' => $user->id,
+        ]);
+
         $applications = Application::with('job')
             ->where('user_id', $user->id)
             ->latest()
             ->get();
+
+        $this->logDebug('Candidate applications loaded', [
+            'application_count' => $applications->count(),
+        ]);
 
         return view('Candidate.dashboard', [
             'applications' => $applications,
