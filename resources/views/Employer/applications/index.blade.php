@@ -2,11 +2,14 @@
 
 @section('content')
 
-<div class="max-w-7xl mx-auto">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-8 md:py-10">
 
-    <!-- HEADER -->
-    <div class="mb-10">
-        <h1 class="text-4xl font-extrabold text-[#1E3A6D]">
+    <div class="mb-8">
+        <a href="{{ route('employer.jobs.index') }}"
+           class="text-sm font-semibold text-[#1E3A6D] hover:underline">
+            ← Back to jobs
+        </a>
+        <h1 class="mt-3 text-3xl md:text-4xl font-extrabold text-[#1E3A6D]">
             Applications
         </h1>
         <p class="text-slate-600 mt-2">
@@ -17,80 +20,74 @@
     <div class="bg-white rounded-3xl shadow-sm border overflow-hidden">
 
         @if ($applications->isEmpty())
-            <div class="p-12 text-center">
+            <div class="p-8 sm:p-12 text-center">
                 <p class="text-slate-600">No applications yet.</p>
             </div>
         @else
 
-        <table class="w-full text-sm">
-            <thead class="bg-slate-50">
-                <tr>
-                    <th class="px-6 py-4 text-left">Candidate</th>
-                    <th class="px-6 py-4">Applied</th>
-                    <th class="px-6 py-4">Status</th>
-                    <th class="px-6 py-4 text-right">Actions</th>
-                </tr>
-            </thead>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm min-w-[640px]">
+                    <thead class="bg-slate-50">
+                        <tr class="text-left text-slate-600 font-semibold">
+                            <th class="px-6 py-4">Candidate</th>
+                            <th class="px-6 py-4">Applied</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
 
-            <tbody class="divide-y">
-                @foreach ($applications as $application)
-                <tr>
+                    <tbody class="divide-y divide-slate-100">
+                        @foreach ($applications as $application)
+                            <tr class="hover:bg-slate-50 transition">
 
-                    <td class="px-6 py-4">
-                        <p class="font-semibold">
-                            {{ $application->candidate->name }}
-                        </p>
-                        <p class="text-xs text-slate-500">
-                            {{ $application->candidate->email }}
-                        </p>
-                    </td>
+                                <td class="px-6 py-4 align-middle">
+                                    <p class="font-semibold text-slate-900">
+                                        {{ $application->candidate->name }}
+                                    </p>
+                                    <p class="text-xs text-slate-500">
+                                        {{ $application->candidate->email }}
+                                    </p>
+                                </td>
 
-                    <td class="px-6 py-4 text-slate-500">
-                        {{ $application->created_at->diffForHumans() }}
-                    </td>
+                                <td class="px-6 py-4 align-middle text-slate-500 whitespace-nowrap">
+                                    {{ $application->created_at->diffForHumans() }}
+                                </td>
 
-                    <td class="px-6 py-4">
-                        <span class="px-3 py-1 rounded-full text-xs font-semibold
-                            @class([
-                                'bg-blue-100 text-blue-700' => $application->status === 'new',
-                                'bg-yellow-100 text-yellow-700' => $application->status === 'shortlisted',
-                                'bg-purple-100 text-purple-700' => $application->status === 'interview',
-                                'bg-red-100 text-red-700' => $application->status === 'rejected',
-                                'bg-green-100 text-green-700' => $application->status === 'hired',
-                            ])">
-                            {{ ucfirst($application->status) }}
-                        </span>
-                    </td>
+                                <td class="px-6 py-4 align-middle">
+                                    <x-application-status-badge :status="$application->status" />
+                                </td>
 
-                    <td class="px-6 py-4 text-right space-x-3">
-                        <a href="{{ route('employer.applications.show', $application) }}"
-                           class="text-[#1E3A6D] font-semibold hover:underline">
-                            View
-                        </a>
+                                <td class="px-6 py-4 align-middle">
+                                    <div class="flex items-center justify-end gap-3 whitespace-nowrap">
+                                        <a href="{{ route('employer.applications.show', $application) }}"
+                                           class="text-[#1E3A6D] font-semibold hover:underline">
+                                            View
+                                        </a>
 
-                        <form method="POST"
-                              action="{{ route('employer.applications.update', $application) }}"
-                              class="inline-block">
-                            @csrf
-                            @method('PATCH')
+                                        <form method="POST"
+                                              action="{{ route('employer.applications.update', $application) }}">
+                                            @csrf
+                                            @method('PATCH')
 
-                            <select name="status"
-                                    onchange="this.form.submit()"
-                                    class="rounded-lg border-gray-300 text-sm">
-                                @foreach (['new','shortlisted','interview','rejected','hired'] as $status)
-                                    <option value="{{ $status }}"
-                                        @selected($application->status === $status)>
-                                        {{ ucfirst($status) }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </form>
-                    </td>
+                                            <select name="status"
+                                                    onchange="this.form.submit()"
+                                                    class="rounded-lg border-gray-300 text-sm">
+                                                @foreach (\App\Enums\ApplicationStatus::cases() as $status)
+                                                    <option value="{{ $status->value }}"
+                                                        @selected($application->status === $status)>
+                                                        {{ $status->label() }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </form>
+                                    </div>
+                                </td>
 
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
         @endif
     </div>

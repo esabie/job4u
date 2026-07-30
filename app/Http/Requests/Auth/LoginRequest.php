@@ -54,6 +54,18 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        if (Auth::user()?->isSuspended()) {
+            Auth::logout();
+
+            AppLogger::warning('Suspended user login blocked', [
+                'email' => $this->input('email'),
+            ]);
+
+            throw ValidationException::withMessages([
+                'email' => 'Your account has been suspended. Contact support if you think this is a mistake.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

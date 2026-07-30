@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -24,54 +24,42 @@ class ProfileController extends Controller
 
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        $user = $request->user();
+
         $this->logInfo('Profile update attempt', [
-            'user_id' => $request->user()->id,
+            'user_id' => $user->id,
             'input' => $this->sanitizedInput($request),
         ]);
 
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-
-            $this->logInfo('Profile email changed, verification reset', [
-                'user_id' => $request->user()->id,
-            ]);
+        if (! $user->isCandidate()) {
+            return Redirect::route('profile.edit');
         }
 
-        $request->user()->save();
+        $validated = $request->validated();
+        unset($validated['cv'], $validated['remove_cv'], $validated['name'], $validated['email']);
+
+        $user->fill($validated);
+
+        if ($request->boolean('remove_cv') && $user->cv_path) {
+            Storage::disk('public')->delete($user->cv_path);
+            $user->cv_path = null;
+        }
+
+        if ($request->hasFile('cv')) {
+            if ($user->cv_path) {
+                Storage::disk('public')->delete($user->cv_path);
+            }
+
+            $user->cv_path = $request->file('cv')->store('cvs/profiles', 'public');
+        }
+
+        $user->save();
 
         $this->logInfo('Profile updated', [
-            'user_id' => $request->user()->id,
+            'user_id' => $user->id,
+            'has_saved_cv' => $user->hasSavedCv(),
         ]);
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
-    }
-
-    public function destroy(Request $request): RedirectResponse
-    {
-        $this->logWarning('Account deletion attempt', [
-            'user_id' => $request->user()->id,
-        ]);
-
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
-
-        $user = $request->user();
-        $userId = $user->id;
-
-        Auth::logout();
-
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        $this->logWarning('Account deleted', [
-            'user_id' => $userId,
-        ]);
-
-        return Redirect::to('/');
     }
 }

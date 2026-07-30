@@ -1,9 +1,8 @@
-<footer class="mt-24">
+<footer class="mt-16 sm:mt-24">
 
-    <!-- MAIN FOOTER -->
     <div class="bg-gradient-to-br from-[#1E3A6D] via-[#1E3A6D] to-[#1E3A6D] text-white">
-        <div class="max-w-7xl mx-auto px-6 py-20
-                    grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20
+                    grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 sm:gap-12">
 
             <!-- BRAND -->
             <div>
@@ -38,9 +37,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('register') }}"
+                        <a href="{{ auth()->check() && auth()->user()->isCandidate() ? route('profile.edit') : route('register') }}"
                            class="hover:text-[#55B84D] transition">
-                            Upload CV
+                            {{ auth()->check() && auth()->user()->isCandidate() ? 'Update CV' : 'Upload CV' }}
                         </a>
                     </li>
                     <li>

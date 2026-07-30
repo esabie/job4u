@@ -30,5 +30,7 @@ class AppServiceProvider extends ServiceProvider
         );
 
         Gate::define('isEmployer', fn ($user) => $user->role === 'employer');
+        Gate::define('isCandidate', fn ($user) => $user->isCandidate());
+        Gate::define('isAdmin', fn ($user) => $user->isAdmin());
     }
 }

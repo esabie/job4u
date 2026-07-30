@@ -2,14 +2,13 @@
 
 @section('content')
 
-<section class="bg-slate-50 min-h-screen">
-    <div class="max-w-5xl mx-auto px-6 py-12">
+<section>
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 md:px-10 py-8 md:py-10">
 
-        <!-- HEADER -->
-        <div class="mb-8 flex items-start gap-5">
+        <div class="mb-8 flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-5">
             <x-company-logo :job="$job" size="xl" />
-            <div>
-                <h1 class="text-3xl font-extrabold text-slate-900">
+            <div class="min-w-0">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
                     {{ $job->title }}
                 </h1>
                 <p class="text-slate-600 mt-1">

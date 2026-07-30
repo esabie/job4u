@@ -24,7 +24,8 @@ return new class extends Migration
                 'applied',
                 'shortlisted',
                 'interview',
-                'rejected'
+                'rejected',
+                'hired',
             ])->default('applied');
 
             $table->timestamps();

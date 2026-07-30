@@ -24,6 +24,7 @@ class RegistrationTest extends TestCase
             'role' => 'employer',
             'password' => 'password',
             'password_confirmation' => 'password',
+            'terms' => '1',
         ]);
 
         $this->assertAuthenticated();

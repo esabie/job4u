@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ApplicationStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class Application extends Model
@@ -14,17 +15,18 @@ class Application extends Model
         'status',
     ];
 
-    /**
-     * The job this application belongs to
-     */
+    protected function casts(): array
+    {
+        return [
+            'status' => ApplicationStatus::class,
+        ];
+    }
+
     public function job()
     {
         return $this->belongsTo(Job::class);
     }
 
-    /**
-     * The candidate who applied
-     */
     public function user()
     {
         return $this->belongsTo(User::class);

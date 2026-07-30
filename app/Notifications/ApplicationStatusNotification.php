@@ -28,7 +28,7 @@ class ApplicationStatusNotification extends Notification
             ->subject('Update on your application: '.$job->title)
             ->greeting('Hi '.$notifiable->name.',')
             ->line('The status of your application for '.$job->title.' at '.$job->company_name.' has been updated.')
-            ->line('New status: '.ucfirst($this->application->status))
+            ->line('New status: '.$this->application->status->label())
             ->action('View Application', route('candidate.applications.show', $this->application))
             ->line('You can turn these emails off anytime in your settings.');
     }

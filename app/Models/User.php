@@ -26,8 +26,15 @@ class User extends Authenticatable
         'email',
         'role',
         'password',
+        'phone',
+        'location',
+        'headline',
+        'summary',
+        'cv_path',
         'notify_application_updates',
         'notify_job_alerts',
+        'notify_new_applications',
+        'is_suspended',
     ];
 
     /**
@@ -52,6 +59,8 @@ class User extends Authenticatable
             'password' => 'hashed',
             'notify_application_updates' => 'boolean',
             'notify_job_alerts' => 'boolean',
+            'notify_new_applications' => 'boolean',
+            'is_suspended' => 'boolean',
         ];
     }
 
@@ -70,6 +79,11 @@ class User extends Authenticatable
         return $this->role === self::ROLE_ADMIN;
     }
 
+    public function isSuspended(): bool
+    {
+        return (bool) $this->is_suspended;
+    }
+
     public function jobs()
     {
         return $this->hasMany(Job::class);
@@ -85,4 +99,18 @@ class User extends Authenticatable
         return $this->hasMany(JobAlert::class);
     }
 
+    public function savedJobs()
+    {
+        return $this->belongsToMany(Job::class, 'saved_jobs')->withTimestamps();
+    }
+
+    public function hasSavedJob(Job $job): bool
+    {
+        return $this->savedJobs()->where('job_id', $job->id)->exists();
+    }
+
+    public function hasSavedCv(): bool
+    {
+        return filled($this->cv_path);
+    }
 }

@@ -2,10 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\JobController as AdminJobController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\PublicJobController;
 use App\Http\Controllers\Candidate\JobAlertController;
+use App\Http\Controllers\Candidate\SavedJobController;
 use App\Http\Controllers\Employer\DashboardController;
 use App\Http\Controllers\Candidate\DashboardController as CandidateDashboardController;
 use App\Http\Controllers\Candidate\ApplicationController as CandidateApplicationController;
@@ -38,6 +42,23 @@ Route::post('/jobs/{job}/apply', [ApplicationController::class, 'store'])->name(
 
 Route::middleware('auth')->group(function () {
 
+    Route::middleware('can:isAdmin')->prefix('admin')->name('admin.')->group(function () {
+        Route::redirect('/', '/admin/dashboard');
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+        Route::get('/jobs', [AdminJobController::class, 'index'])->name('jobs.index');
+        Route::get('/jobs/{job}', [AdminJobController::class, 'show'])->name('jobs.show');
+        Route::patch('/jobs/{job}/verify', [AdminJobController::class, 'verify'])->name('jobs.verify');
+        Route::patch('/jobs/{job}/unverify', [AdminJobController::class, 'unverify'])->name('jobs.unverify');
+        Route::patch('/jobs/{job}/activate', [AdminJobController::class, 'activate'])->name('jobs.activate');
+        Route::patch('/jobs/{job}/deactivate', [AdminJobController::class, 'deactivate'])->name('jobs.deactivate');
+
+        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+        Route::get('/users/{user}', [AdminUserController::class, 'show'])->name('users.show');
+        Route::patch('/users/{user}/suspend', [AdminUserController::class, 'suspend'])->name('users.suspend');
+        Route::patch('/users/{user}/unsuspend', [AdminUserController::class, 'unsuspend'])->name('users.unsuspend');
+    });
+
     Route::middleware('can:isEmployer')->prefix('employer')->name('employer.')->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -60,7 +81,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         $user = Auth::user();
 
-        if ($user->role === 'employer') {
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        if ($user->isEmployer()) {
             return redirect('/employer/dashboard');
         }
 
@@ -72,6 +97,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/candidate/applications', [CandidateApplicationController::class, 'index'])->name('candidate.applications.index');
 
     Route::get('/candidate/applications/{application}', [CandidateApplicationController::class, 'show'])->name('candidate.applications.show');
+
+    Route::middleware('can:isCandidate')->group(function () {
+        Route::get('/candidate/saved-jobs', [SavedJobController::class, 'index'])->name('candidate.saved.index');
+        Route::post('/jobs/{job}/save', [SavedJobController::class, 'store'])->name('candidate.saved.store');
+        Route::delete('/jobs/{job}/save', [SavedJobController::class, 'destroy'])->name('candidate.saved.destroy');
+    });
 
     // Job Alerts (candidates)
     Route::get('/candidate/alerts', [JobAlertController::class, 'index'])->name('candidate.alerts.index');
@@ -89,9 +120,6 @@ Route::middleware('auth')->group(function () {
 
     Route::patch('/profile', [ProfileController::class, 'update'])
         ->name('profile.update');
-
-    Route::delete('/profile', [ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
 });
 
 /*

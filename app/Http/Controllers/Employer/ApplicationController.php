@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Employer;
 
 use App\Http\Controllers\Controller;
+use App\Enums\ApplicationStatus;
 use App\Models\Application;
 use App\Models\Job;
 use App\Notifications\ApplicationStatusNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class ApplicationController extends Controller
 {
@@ -71,16 +73,16 @@ class ApplicationController extends Controller
         ]);
 
         $request->validate([
-            'status' => 'required|in:new,shortlisted,interview,rejected,hired',
+            'status' => ['required', Rule::enum(ApplicationStatus::class)],
         ]);
 
         $application->update([
-            'status' => $request->status,
+            'status' => $request->enum('status', ApplicationStatus::class),
         ]);
 
         $this->logInfo('Application status updated', [
             'application_id' => $application->id,
-            'status' => $application->status,
+            'status' => $application->status?->value,
         ]);
 
         $candidate = $application->candidate;

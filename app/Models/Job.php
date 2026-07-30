@@ -30,6 +30,16 @@ class Job extends Model
         'is_verified',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+            'is_verified' => 'boolean',
+            'salary_min' => 'integer',
+            'salary_max' => 'integer',
+        ];
+    }
+
     /**
      * Employer who posted the job
      */
@@ -52,6 +62,11 @@ class Job extends Model
     public function applications()
     {
         return $this->hasMany(Application::class);
+    }
+
+    public function savedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'saved_jobs')->withTimestamps();
     }
 
     public function questions()

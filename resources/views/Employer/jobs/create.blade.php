@@ -2,14 +2,11 @@
 
 @section('content')
 
-<div class="max-w-5xl mx-auto">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 md:px-10 py-8 md:py-10">
 
-    <!-- ===================== -->
-    <!-- HEADER -->
-    <!-- ===================== -->
-    <div class="mb-10 flex items-start justify-between">
+    <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-            <h1 class="text-4xl font-extrabold text-[#1E3A6D]">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-[#1E3A6D]">
                 Post a Job
             </h1>
             <p class="mt-2 text-slate-600 max-w-xl">
@@ -19,8 +16,8 @@
         </div>
 
         <a href="{{ route('employer.dashboard') }}"
-           class="px-5 py-2.5 rounded-xl border border-slate-300
-                  text-slate-600 font-semibold hover:bg-slate-100 transition">
+           class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-slate-300
+                  text-slate-600 font-semibold hover:bg-slate-100 transition shrink-0">
             Cancel
         </a>
     </div>
@@ -32,7 +29,7 @@
           action="{{ route('employer.jobs.store') }}"
           enctype="multipart/form-data"
           data-loader-message="Publishing your listing..."
-          class="bg-white rounded-3xl shadow-sm border p-10 space-y-10">
+          class="bg-white rounded-3xl shadow-sm border p-6 sm:p-8 md:p-10 space-y-8 md:space-y-10">
         @csrf
 
         <!-- ===================== -->

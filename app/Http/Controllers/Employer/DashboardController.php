@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Employer;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Job;
+use App\Enums\ApplicationStatus;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -24,7 +25,7 @@ class DashboardController extends Controller
             ->count();
 
         $newApplicants = Application::whereIn('job_id', $employerJobIds)
-            ->where('status', 'applied')
+            ->where('status', ApplicationStatus::Applied)
             ->count();
 
         $applicantsByDay = collect(range(6, 0))->map(function (int $daysAgo) use ($employerJobIds) {

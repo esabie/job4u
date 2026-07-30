@@ -2,11 +2,10 @@
 
 @section('content')
 
-    <!-- HERO SECTION -->
-    <section class="max-w-7xl mx-auto px-6 mt-12">
-        <div class="bg-[#eef7f2] rounded-[40px] px-8 py-20 text-center">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-8 sm:mt-12">
+        <div class="bg-[#eef7f2] rounded-[28px] sm:rounded-[40px] px-5 sm:px-8 py-12 sm:py-20 text-center">
 
-            <h1 class="text-[42px] md:text-[56px] font-extrabold text-[#1E3A6D] leading-tight">
+            <h1 class="text-3xl sm:text-[42px] md:text-[56px] font-extrabold text-[#1E3A6D] leading-tight">
                 Where Opportunity Meets Talent
             </h1>
 
@@ -49,10 +48,10 @@
                     Find Jobs
                 </a>
 
-                <a href="{{ route('register') }}"
+                <a href="{{ auth()->check() && auth()->user()->isCandidate() ? route('profile.edit') : route('register') }}"
                    class="px-8 py-3 rounded-full bg-[#1E3A6D] text-white font-bold text-sm
                           hover:bg-blue-700 transition transform hover:scale-105 text-center">
-                    Upload CV
+                    {{ auth()->check() && auth()->user()->isCandidate() ? 'Update CV' : 'Upload CV' }}
                 </a>
 
                 <a href="{{ route('register') }}"

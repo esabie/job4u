@@ -2,63 +2,50 @@
 
 @section('content')
 
-<section class="bg-slate-50 min-h-screen">
-    <div class="max-w-7xl mx-auto px-6 py-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-8 md:py-10">
 
-        <!-- HEADER -->
-        <div class="mb-10">
-            <h1 class="text-3xl font-extrabold text-[#1E3A6D]">
-                My Applications
-            </h1>
-            <p class="text-slate-600 mt-1">
-                All the jobs you have successfully applied to.
-            </p>
-        </div>
+    <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-[#1E3A6D]">
+            My Applications
+        </h1>
+        <p class="text-slate-600 mt-1">
+            All the jobs you have successfully applied to.
+        </p>
+    </div>
 
-        <!-- APPLICATIONS TABLE -->
-        <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
 
-            <table class="w-full text-sm">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm min-w-[560px]">
                 <thead class="bg-slate-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left">Job</th>
-                        <th class="px-6 py-3 text-left">Company</th>
-                        <th class="px-6 py-3 text-left">Status</th>
-                        <th class="px-6 py-3 text-left">Applied</th>
+                    <tr class="text-left text-slate-600 font-semibold">
+                        <th class="px-6 py-3">Job</th>
+                        <th class="px-6 py-3">Company</th>
+                        <th class="px-6 py-3">Status</th>
+                        <th class="px-6 py-3">Applied</th>
                     </tr>
                 </thead>
 
-                <tbody class="divide-y">
+                <tbody class="divide-y divide-slate-100">
                     @forelse($applications as $application)
                         <tr class="hover:bg-slate-50 transition">
 
-                            <td class="px-6 py-4 font-medium">
+                            <td class="px-6 py-4 font-medium align-middle">
                                 <a href="{{ route('candidate.applications.show', $application) }}"
                                    class="text-[#1E3A6D] hover:underline">
                                     {{ $application->job->title }}
                                 </a>
                             </td>
 
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 align-middle">
                                 {{ $application->job->company_name }}
                             </td>
 
-                            <td class="px-6 py-4">
-                                <span class="px-3 py-1 rounded-full text-xs font-semibold
-                                    @if($application->status === 'applied')
-                                        bg-blue-100 text-blue-700
-                                    @elseif($application->status === 'shortlisted')
-                                        bg-green-100 text-green-700
-                                    @elseif($application->status === 'interview')
-                                        bg-yellow-100 text-yellow-700
-                                    @else
-                                        bg-red-100 text-red-700
-                                    @endif">
-                                    {{ ucfirst($application->status) }}
-                                </span>
+                            <td class="px-6 py-4 align-middle">
+                                <x-application-status-badge :status="$application->status" />
                             </td>
 
-                            <td class="px-6 py-4 text-slate-600">
+                            <td class="px-6 py-4 text-slate-600 align-middle whitespace-nowrap">
                                 {{ $application->created_at->diffForHumans() }}
                             </td>
 
@@ -76,16 +63,16 @@
                     @endforelse
                 </tbody>
             </table>
-
         </div>
 
-        @if($applications->hasPages())
-            <div class="mt-8">
-                {{ $applications->links() }}
-            </div>
-        @endif
-
     </div>
-</section>
+
+    @if($applications->hasPages())
+        <div class="mt-6">
+            {{ $applications->links() }}
+        </div>
+    @endif
+
+</div>
 
 @endsection
