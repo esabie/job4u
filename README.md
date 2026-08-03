@@ -1,59 +1,180 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Job4U
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Job4U is a job board platform that connects employers with job seekers. Employers can post and manage roles; candidates can search, save jobs, apply with a CV, and track application progress.
 
-## About Laravel
+**Tagline:** Where Opportunity Meets Talent
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Public
+- Landing page and job search (`/jobs`)
+- Filters for location, category, employment type, work arrangement, salary, and sort order
+- Job detail pages with company logo, salary, and work arrangement
+- Apply flow with CV upload (or saved profile CV) and optional employer questions
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Job seekers (candidates)
+- Dashboard with application stats and applications-by-day chart
+- Application history and status tracking
+- Saved jobs
+- Job alerts with email notifications
+- Profile with phone, location, headline, summary, and reusable CV
+- Notification preferences in Settings
 
-## Learning Laravel
+### Employers
+- Dashboard with active listings, new applicants, and applicants-by-day chart
+- Create / edit / hide job posts
+- Optional company logo upload
+- Work arrangement (Onsite / Hybrid / Remote)
+- Custom application questions (text, textarea, yes/no)
+- Review applications and update status (Applied → Shortlisted → Interview → Rejected / Hired)
+- Company name autocomplete suggestions
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Admins
+- Moderate jobs (verify, activate, hide)
+- Manage users (suspend / restore)
+- Create an admin with `php artisan app:create-admin`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Tech stack
 
-## Laravel Sponsors
+| Layer | Technology |
+| --- | --- |
+| Backend | PHP 8.2+, Laravel 12 |
+| Auth | Laravel Breeze (Blade) |
+| Frontend | Blade, Tailwind CSS, Alpine.js, Vite |
+| Editor | Quill (rich job descriptions) |
+| Database | SQLite by default (MySQL/Postgres supported) |
+| Queues | Database driver |
+| Tests | PHPUnit |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Requirements
 
-### Premium Partners
+- PHP 8.2+
+- Composer
+- Node.js 18+ and npm
+- SQLite (local default) or MySQL/PostgreSQL
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Local setup
 
-## Contributing
+```bash
+# 1. Install PHP dependencies
+composer install
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# 2. Environment
+cp .env.example .env
+php artisan key:generate
 
-## Code of Conduct
+# 3. Database (SQLite default)
+touch database/database.sqlite
+php artisan migrate
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# 4. Storage link (for logos and CVs)
+php artisan storage:link
 
-## Security Vulnerabilities
+# 5. Frontend
+npm install
+npm run build
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 6. Run the app
+php artisan serve
+```
+
+Optional all-in-one for day-to-day development (server + queue + logs + Vite):
+
+```bash
+composer run dev
+```
+
+Then open `http://127.0.0.1:8000` (or the port shown in the terminal).
+
+### Create an admin user
+
+```bash
+php artisan app:create-admin admin@example.com --name="Admin Name"
+```
+
+### Useful artisan commands
+
+```bash
+php artisan migrate          # Run pending migrations
+php artisan queue:work        # Process queued notifications/jobs
+php artisan test             # Run the test suite
+php artisan storage:link     # Public disk symlink
+```
+
+## Environment notes
+
+Key values in `.env` / `.env.example`:
+
+| Variable | Purpose |
+| --- | --- |
+| `APP_NAME` | Shown as Job4U in the UI / emails |
+| `DB_CONNECTION` | `sqlite` locally; use `mysql` / `pgsql` in production |
+| `SESSION_LIFETIME` | Idle session lifetime in minutes (default in example: `5`) |
+| `QUEUE_CONNECTION` | `database` — run a queue worker for notifications |
+| `MAIL_MAILER` | `log` locally; use SMTP/API in production |
+| `ALLOW_DESTRUCTIVE_DB_COMMANDS` | Must stay `false` unless you explicitly approve a destructive DB command |
+
+### Uploads
+
+- **CVs:** PDF, DOC, DOCX — max **2 MB**
+- **Company logos:** JPEG, JPG, PNG — max **2 MB**
+
+### Database safety
+
+Destructive Artisan DB commands (`migrate:fresh`, `migrate:refresh`, `db:wipe`, etc.) are blocked by default. Only run them if you have explicitly approved that action and temporarily set `ALLOW_DESTRUCTIVE_DB_COMMANDS=true`.
+
+## Roles
+
+| Role | Access |
+| --- | --- |
+| `candidate` | Search, apply, alerts, saved jobs, candidate dashboard |
+| `employer` | Post jobs, review applications, employer dashboard |
+| `admin` | Platform moderation at `/admin` |
+
+Registration allows **Job Seeker** or **Employer**. Name and email are fixed after signup (editable elsewhere only by design choices in Profile).
+
+## Project structure (high level)
+
+```text
+app/
+  Enums/                 # ApplicationStatus, WorkArrangement, QuestionType
+  Http/Controllers/      # Public, Candidate, Employer, Admin, Auth
+  Models/                # User, Job, Application, JobAlert, JobQuestion, …
+  Notifications/         # Application status, job alerts, new applications
+  Support/               # Logging helpers, HTML sanitizer
+resources/
+  views/                 # Blade templates (public, candidate, employer, auth)
+  js/                    # Alpine helpers, rich text, loading UI
+  css/                   # Tailwind entry
+routes/
+  web.php                # App routes
+  auth.php               # Breeze auth routes
+database/migrations/     # Schema
+tests/                   # Feature and unit tests
+```
+
+## Testing
+
+```bash
+php artisan test
+```
+
+Or:
+
+```bash
+composer test
+```
+
+## Production checklist
+
+- Switch to MySQL or PostgreSQL (avoid SQLite for concurrent production traffic)
+- Set `APP_ENV=production`, `APP_DEBUG=false`, and a strong `APP_KEY`
+- Configure real mail (`MAIL_MAILER`) for alerts and application emails
+- Run `php artisan queue:work` under Supervisor (or similar)
+- Build assets with `npm run build`
+- Serve behind Nginx/Apache with HTTPS
+- Keep `ALLOW_DESTRUCTIVE_DB_COMMANDS=false`
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This application is built on the [Laravel framework](https://laravel.com), which is open-sourced under the [MIT license](https://opensource.org/licenses/MIT).
