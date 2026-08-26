@@ -39,10 +39,10 @@
 
                                 <td class="px-6 py-4 align-middle">
                                     <p class="font-semibold text-slate-900">
-                                        {{ $application->candidate->name }}
+                                        {{ $application->candidate?->name ?? 'Unknown candidate' }}
                                     </p>
                                     <p class="text-xs text-slate-500">
-                                        {{ $application->candidate->email }}
+                                        {{ $application->candidate?->email }}
                                     </p>
                                 </td>
 

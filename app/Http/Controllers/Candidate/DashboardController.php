@@ -47,7 +47,7 @@ class DashboardController extends Controller
             'application_count' => $applications->count(),
         ]);
 
-        return view('Candidate.dashboard', [
+        return view('candidate.dashboard', [
             'applications' => $applications,
             'totalApplications' => $applications->count(),
             'shortlisted' => $applications->where('status', ApplicationStatus::Shortlisted)->count(),

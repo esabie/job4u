@@ -61,7 +61,7 @@ class DashboardController extends Controller
             'recent_applications' => $recentApplications->count(),
         ]);
 
-        return view('Employer.dashboard', compact(
+        return view('employer.dashboard', compact(
             'activeJobs',
             'newApplicants',
             'applicantsByDay',
