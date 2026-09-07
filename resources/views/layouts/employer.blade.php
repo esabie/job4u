@@ -76,6 +76,11 @@
             @endcan
 
             @can('isCandidate')
+                <a href="{{ route('jobs.index') }}"
+                   class="{{ $navClass(request()->routeIs('jobs.index', 'jobs.show')) }}">
+                    Find Jobs
+                </a>
+
                 <a href="{{ route('candidate.applications.index') }}"
                    class="{{ $navClass(request()->routeIs('candidate.applications.*')) }}">
                     Applications

@@ -48,7 +48,7 @@
                     Find Jobs
                 </a>
 
-                <a href="{{ auth()->check() && auth()->user()->isCandidate() ? route('profile.edit') : route('register') }}"
+                <a href="{{ route('cv.upload') }}"
                    class="px-8 py-3 rounded-full bg-[#1E3A6D] text-white font-bold text-sm
                           hover:bg-blue-700 transition transform hover:scale-105 text-center">
                     {{ auth()->check() && auth()->user()->isCandidate() ? 'Update CV' : 'Upload CV' }}
@@ -67,7 +67,7 @@
     <!-- FEATURES -->
     <section class="max-w-7xl mx-auto px-6 mt-20 grid grid-cols-1 md:grid-cols-3 gap-10">
 
-        <div class="bg-gray-100 p-10 rounded-xl text-center hover:shadow-lg transition">
+        <div class="bg-gray-100 p-10 rounded-xl text-center">
             <h3 class="text-[#1E3A6D] font-bold text-lg mb-4">
                 Fast Applications
             </h3>
@@ -76,7 +76,7 @@
             </p>
         </div>
 
-        <div class="bg-gray-100 p-10 rounded-xl text-center hover:shadow-lg transition">
+        <div class="bg-gray-100 p-10 rounded-xl text-center">
             <h3 class="text-[#1E3A6D] font-bold text-lg mb-4">
                 Relevant matches
             </h3>
@@ -85,7 +85,7 @@
             </p>
         </div>
 
-        <div class="bg-gray-100 p-10 rounded-xl text-center hover:shadow-lg transition">
+        <div class="bg-gray-100 p-10 rounded-xl text-center">
             <h3 class="text-[#1E3A6D] font-bold text-lg mb-4">
                 Verified environment
             </h3>

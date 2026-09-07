@@ -68,7 +68,7 @@
                 <x-input-error class="mt-2" :messages="$errors->get('summary')" />
             </div>
 
-            <div>
+            <div id="cv">
                 <x-input-label for="cv" :value="__('Saved CV')" />
 
                 @if ($user->hasSavedCv())

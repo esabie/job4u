@@ -223,7 +223,7 @@
                             </span>
                         @else
                             <a
-                                href="{{ route('jobs.show', $job) }}#apply-form"
+                                href="{{ route('jobs.show', $job) }}"
                                 class="inline-flex items-center justify-center px-5 py-2 rounded-xl bg-[#1E3A6D] text-white
                                        text-sm font-semibold hover:bg-blue-700 transition">
                                 Apply Now

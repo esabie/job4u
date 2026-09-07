@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\SafeIntendedUrl;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,8 +18,10 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
+        SafeIntendedUrl::rememberFromRequest($request);
+
         $this->logDebug('Registration form viewed');
 
         return view('auth.register');
@@ -54,12 +57,14 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        SafeIntendedUrl::rememberFromRequest($request);
+
         $this->logInfo('User registered successfully', [
             'user_id' => $user->id,
             'role' => $user->role,
             'email' => $user->email,
         ]);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 }

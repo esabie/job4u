@@ -444,6 +444,13 @@
                   x-data="{ show: false }">
                 @csrf
 
+                @php
+                    $redirectTo = request('redirect', session('url.intended'));
+                @endphp
+                @if (is_string($redirectTo) && $redirectTo !== '')
+                    <input type="hidden" name="redirect" value="{{ $redirectTo }}">
+                @endif
+
                 <div>
                     <label for="email" class="auth-label">Email Address</label>
                     <div class="auth-input-wrap">
@@ -517,7 +524,7 @@
 
             <p class="auth-switch">
                 New to the platform?
-                <a href="{{ route('register') }}">Create an account</a>
+                <a href="{{ route('register', request()->only('redirect')) }}">Create an account</a>
             </p>
 
             <div class="auth-meta">

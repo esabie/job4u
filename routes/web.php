@@ -29,6 +29,21 @@ Route::get('/', function () {
     return view('public.home');
 })->name('home');
 
+// Upload CV CTA: candidates go to profile; guests register/login then return here
+Route::get('/upload-cv', function () {
+    $profileWithCv = \App\Support\SafeIntendedUrl::forRoute('profile.edit', fragment: 'cv');
+
+    if (Auth::check()) {
+        return Auth::user()->isCandidate()
+            ? redirect()->to($profileWithCv)
+            : redirect()->route('dashboard');
+    }
+
+    session(['url.intended' => $profileWithCv]);
+
+    return redirect()->route('register');
+})->name('cv.upload');
+
 // FIND JOBS
 Route::get('/jobs', [PublicJobController::class, 'index'])->name('jobs.index');
 Route::get('/jobs/{job}', [PublicJobController::class, 'show'])->name('jobs.show');

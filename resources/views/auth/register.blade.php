@@ -58,7 +58,7 @@
                         </h2>
                         <p class="mt-2 text-sm text-slate-500">
                             Already a member?
-                            <a href="{{ route('login') }}" class="font-semibold text-[#55B84D] hover:text-[#44963d]">
+                            <a href="{{ route('login', request()->only('redirect')) }}" class="font-semibold text-[#55B84D] hover:text-[#44963d]">
                                 Log in
                             </a>
                         </p>
@@ -81,6 +81,13 @@
                           class="space-y-4"
                           x-data="{ showPassword: false, showConfirm: false }">
                         @csrf
+
+                        @php
+                            $redirectTo = request('redirect', session('url.intended'));
+                        @endphp
+                        @if (is_string($redirectTo) && $redirectTo !== '')
+                            <input type="hidden" name="redirect" value="{{ $redirectTo }}">
+                        @endif
 
                         <div>
                             <label for="name" class="block text-sm font-semibold text-slate-700 mb-1.5">

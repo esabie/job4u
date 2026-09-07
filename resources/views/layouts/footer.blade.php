@@ -37,7 +37,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ auth()->check() && auth()->user()->isCandidate() ? route('profile.edit') : route('register') }}"
+                        <a href="{{ route('cv.upload') }}"
                            class="hover:text-[#55B84D] transition">
                             {{ auth()->check() && auth()->user()->isCandidate() ? 'Update CV' : 'Upload CV' }}
                         </a>

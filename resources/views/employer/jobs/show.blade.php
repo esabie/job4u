@@ -65,7 +65,7 @@
                     Please login to apply for this job.
                 </p>
 
-                <a href="{{ route('login') }}"
+                <a href="{{ route('login', ['redirect' => \App\Support\SafeIntendedUrl::forRoute('jobs.show', $job)]) }}"
                    class="inline-block px-6 py-3 rounded-xl bg-[#1E3A6D] text-white font-semibold
                           hover:bg-blue-700 transition">
                     Login to Apply
