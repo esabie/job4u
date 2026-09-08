@@ -14,6 +14,7 @@ use App\Http\Controllers\Employer\DashboardController;
 use App\Http\Controllers\Candidate\DashboardController as CandidateDashboardController;
 use App\Http\Controllers\Candidate\ApplicationController as CandidateApplicationController;
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\CvUploadController;
 use App\Http\Controllers\Employer\JobController;
 use App\Http\Controllers\Employer\CompanySuggestionController;
 use App\Http\Controllers\Employer\ApplicationController as EmployerApplicationController;
@@ -29,20 +30,7 @@ Route::get('/', function () {
     return view('public.home');
 })->name('home');
 
-// Upload CV CTA: candidates go to profile; guests register/login then return here
-Route::get('/upload-cv', function () {
-    $profileWithCv = \App\Support\SafeIntendedUrl::forRoute('profile.edit', fragment: 'cv');
-
-    if (Auth::check()) {
-        return Auth::user()->isCandidate()
-            ? redirect()->to($profileWithCv)
-            : redirect()->route('dashboard');
-    }
-
-    session(['url.intended' => $profileWithCv]);
-
-    return redirect()->route('register');
-})->name('cv.upload');
+Route::get('/upload-cv', CvUploadController::class)->name('cv.upload');
 
 // FIND JOBS
 Route::get('/jobs', [PublicJobController::class, 'index'])->name('jobs.index');

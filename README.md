@@ -111,8 +111,29 @@ Key values in `.env` / `.env.example`:
 | `DB_CONNECTION` | `sqlite` locally; use `mysql` / `pgsql` in production |
 | `SESSION_LIFETIME` | Idle session lifetime in minutes (default in example: `5`) |
 | `QUEUE_CONNECTION` | `database` — run a queue worker for notifications |
-| `MAIL_MAILER` | `log` locally; use SMTP/API in production |
+| `MAIL_MAILER` | `log` locally; use `resend` in production |
+| `RESEND_API_KEY` | Resend API key (required when `MAIL_MAILER=resend`) |
+| `MAIL_FROM_ADDRESS` | Must be a domain verified in Resend |
 | `ALLOW_DESTRUCTIVE_DB_COMMANDS` | Must stay `false` unless you explicitly approve a destructive DB command |
+
+### Email (Resend)
+
+Password reset and app notifications use Laravel mail. To send via Resend:
+
+1. Create an API key at [resend.com](https://resend.com)
+2. Verify your sending domain in Resend
+3. Set in `.env`:
+
+```env
+MAIL_MAILER=resend
+RESEND_API_KEY=re_xxxxxxxxx
+MAIL_FROM_ADDRESS=noreply@your-verified-domain.com
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+4. Run `php artisan config:clear` (or `config:cache` in production)
+
+Keep `MAIL_MAILER=log` locally if you do not want to send real email during development.
 
 ### Uploads
 
@@ -169,7 +190,7 @@ composer test
 
 - Switch to MySQL or PostgreSQL (avoid SQLite for concurrent production traffic)
 - Set `APP_ENV=production`, `APP_DEBUG=false`, and a strong `APP_KEY`
-- Configure real mail (`MAIL_MAILER`) for alerts and application emails
+- Configure Resend mail (`MAIL_MAILER=resend`, `RESEND_API_KEY`, verified `MAIL_FROM_ADDRESS`) for password reset and notifications
 - Run `php artisan queue:work` under Supervisor (or similar)
 - Build assets with `npm run build`
 - Serve behind Nginx/Apache with HTTPS
