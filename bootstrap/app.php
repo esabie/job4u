@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
             LogHttpRequests::class,
+            'throttle:global',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

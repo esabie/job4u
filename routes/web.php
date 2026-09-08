@@ -35,7 +35,9 @@ Route::get('/upload-cv', CvUploadController::class)->name('cv.upload');
 // FIND JOBS
 Route::get('/jobs', [PublicJobController::class, 'index'])->name('jobs.index');
 Route::get('/jobs/{job}', [PublicJobController::class, 'show'])->name('jobs.show');
-Route::post('/jobs/{job}/apply', [ApplicationController::class, 'store'])->name('jobs.apply');
+Route::post('/jobs/{job}/apply', [ApplicationController::class, 'store'])
+    ->middleware('throttle:applications')
+    ->name('jobs.apply');
 
 /*
 |--------------------------------------------------------------------------
