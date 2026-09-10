@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Support\SafeIntendedUrl;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class UploadCvRedirectTest extends TestCase
@@ -24,23 +25,30 @@ class UploadCvRedirectTest extends TestCase
 
     public function test_guest_returns_to_profile_cv_after_registering_via_upload_cv(): void
     {
+        Mail::fake();
+
         $this->get(route('cv.upload'))->assertRedirect(route('register'));
 
-        $response = $this->post('/register', [
+        $this->post('/register', [
             'name' => 'Jane Candidate',
             'email' => 'jane@example.com',
             'role' => 'candidate',
             'password' => 'password',
             'password_confirmation' => 'password',
             'terms' => '1',
-        ]);
+        ])->assertRedirect(route('login.verify'));
+
+        $this->post(route('login.verify.store'), [
+            'code' => $this->lastTwoFactorCode(),
+        ])->assertRedirect(SafeIntendedUrl::forRoute('profile.edit', fragment: 'cv'));
 
         $this->assertAuthenticated();
-        $response->assertRedirect(SafeIntendedUrl::forRoute('profile.edit', fragment: 'cv'));
     }
 
     public function test_guest_returns_to_profile_cv_after_logging_in_via_upload_cv(): void
     {
+        Mail::fake();
+
         $user = User::factory()->create([
             'role' => 'candidate',
             'password' => bcrypt('password'),
@@ -48,13 +56,10 @@ class UploadCvRedirectTest extends TestCase
 
         $this->get(route('cv.upload'))->assertRedirect(route('register'));
 
-        $response = $this->post('/login', [
-            'email' => $user->email,
-            'password' => 'password',
-        ]);
+        $this->loginWithTwoFactor($user)
+            ->assertRedirect(SafeIntendedUrl::forRoute('profile.edit', fragment: 'cv'));
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(SafeIntendedUrl::forRoute('profile.edit', fragment: 'cv'));
+        $this->assertAuthenticatedAs($user);
     }
 
     public function test_authenticated_candidate_upload_cv_goes_to_profile(): void

@@ -97,9 +97,7 @@
                 </div>
 
                 <div class="flex items-center gap-3 sm:gap-4">
-                    <span class="text-sm font-medium text-slate-600 truncate max-w-[120px] sm:max-w-none">
-                        {{ auth()->user()->name }}
-                    </span>
+                    <x-profile-nav-link />
 
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

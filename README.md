@@ -109,7 +109,8 @@ Key values in `.env` / `.env.example`:
 | --- | --- |
 | `APP_NAME` | Shown as Job4U in the UI / emails |
 | `DB_CONNECTION` | `sqlite` locally; use `mysql` / `pgsql` in production |
-| `SESSION_LIFETIME` | Idle session lifetime in minutes (default in example: `5`) |
+| `SESSION_DRIVER` | Must be `database` or `redis` — never `cookie` (causes HTTP 431) |
+| `SESSION_LIFETIME` | Idle session lifetime in minutes (default in example: `120`; keep ≥ 10 for OTP login) |
 | `QUEUE_CONNECTION` | `database` — run a queue worker for notifications |
 | `MAIL_MAILER` | `log` locally; use `resend` in production |
 | `RESEND_API_KEY` | Resend API key (required when `MAIL_MAILER=resend`) |

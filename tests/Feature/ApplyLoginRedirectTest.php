@@ -6,6 +6,7 @@ use App\Models\Job;
 use App\Models\User;
 use App\Support\SafeIntendedUrl;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class ApplyLoginRedirectTest extends TestCase
@@ -33,6 +34,8 @@ class ApplyLoginRedirectTest extends TestCase
 
     public function test_login_to_apply_returns_user_to_the_job_listing(): void
     {
+        Mail::fake();
+
         $employer = User::factory()->create(['role' => 'employer']);
         $candidate = User::factory()->create([
             'role' => 'candidate',
@@ -47,11 +50,7 @@ class ApplyLoginRedirectTest extends TestCase
 
         $this->assertSame($intended, session('url.intended'));
 
-        $this->post('/login', [
-            'email' => $candidate->email,
-            'password' => 'password',
-            'redirect' => $intended,
-        ])
+        $this->loginWithTwoFactor($candidate, 'password', ['redirect' => $intended])
             ->assertRedirect($intended);
 
         $this->assertAuthenticatedAs($candidate);
@@ -59,6 +58,7 @@ class ApplyLoginRedirectTest extends TestCase
 
     public function test_login_accepts_absolute_url_when_host_differs_from_app_url(): void
     {
+        Mail::fake();
         config(['app.url' => 'http://localhost']);
 
         $employer = User::factory()->create(['role' => 'employer']);
@@ -80,12 +80,17 @@ class ApplyLoginRedirectTest extends TestCase
             'email' => $candidate->email,
             'password' => 'password',
             'redirect' => $absolute,
-        ])
-            ->assertRedirect($relative);
+        ])->assertRedirect(route('login.verify'));
+
+        $this->post(route('login.verify.store'), [
+            'code' => $this->lastTwoFactorCode(),
+        ])->assertRedirect($relative);
     }
 
     public function test_registering_after_login_to_apply_returns_to_the_job_listing(): void
     {
+        Mail::fake();
+
         $employer = User::factory()->create(['role' => 'employer']);
         $job = $this->createJob($employer);
 
@@ -103,8 +108,11 @@ class ApplyLoginRedirectTest extends TestCase
             'password_confirmation' => 'password',
             'terms' => '1',
             'redirect' => $intended,
-        ])
-            ->assertRedirect($intended);
+        ])->assertRedirect(route('login.verify'));
+
+        $this->post(route('login.verify.store'), [
+            'code' => $this->lastTwoFactorCode(),
+        ])->assertRedirect($intended);
 
         $this->assertAuthenticated();
     }

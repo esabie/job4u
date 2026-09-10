@@ -130,10 +130,7 @@
                 </div>
 
                 <div class="flex items-center gap-3 sm:gap-4">
-                    <a href="{{ route('profile.edit') }}"
-                       class="text-sm font-medium text-slate-600 hover:text-[#1E3A6D] transition truncate max-w-[120px] sm:max-w-none">
-                        {{ auth()->user()->name }}
-                    </a>
+                    <x-profile-nav-link />
 
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Support\SafeIntendedUrl;
+use App\Support\TwoFactor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,17 +35,22 @@ class AuthenticatedSessionController extends Controller
             'remember' => $request->boolean('remember'),
         ]);
 
-        $request->authenticate();
+        $user = $request->authenticate();
 
         SafeIntendedUrl::rememberFromRequest($request);
 
-        $request->session()->regenerate();
-
-        $this->logInfo('User logged in', [
-            'user_id' => Auth::id(),
+        $request->session()->put([
+            'login.id' => $user->id,
+            'login.remember' => $request->boolean('remember'),
         ]);
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        TwoFactor::sendCode($user->fresh());
+
+        $this->logInfo('Two-factor challenge started', [
+            'user_id' => $user->id,
+        ]);
+
+        return redirect()->route('login.verify');
     }
 
     /**

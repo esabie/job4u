@@ -48,19 +48,7 @@
                         Dashboard
                     </a>
 
-                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 hover:text-[#1E3A6D] transition">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             class="h-5 w-5"
-                             fill="none"
-                             viewBox="0 0 24 24"
-                             stroke="currentColor">
-                            <path stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
-                                  d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        {{ auth()->user()->name }}
-                    </a>
+                    <x-profile-nav-link />
 
                     <form method="POST" action="{{ route('logout') }}" data-no-loader>
                         @csrf
@@ -129,7 +117,8 @@
                 </a>
 
                 <a href="{{ route('profile.edit') }}" class="hover:text-[#1E3A6D]">
-                    {{ auth()->user()->name }}
+                    View profile
+                    <span class="block text-xs font-medium text-slate-500">{{ auth()->user()->name }}</span>
                 </a>
 
                 <form method="POST" action="{{ route('logout') }}" data-no-loader>

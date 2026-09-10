@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Support\SafeIntendedUrl;
+use App\Support\TwoFactor;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -55,16 +56,21 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
-
         SafeIntendedUrl::rememberFromRequest($request);
 
-        $this->logInfo('User registered successfully', [
+        $request->session()->put([
+            'login.id' => $user->id,
+            'login.remember' => false,
+        ]);
+
+        TwoFactor::sendCode($user);
+
+        $this->logInfo('User registered; two-factor challenge started', [
             'user_id' => $user->id,
             'role' => $user->role,
             'email' => $user->email,
         ]);
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->route('login.verify');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use App\Support\AppLogger;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
@@ -34,15 +35,17 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Attempt to authenticate the request's credentials.
+     * Validate credentials without creating a session. Auth happens after OTP.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function authenticate(): void
+    public function authenticate(): User
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $credentials = $this->only('email', 'password');
+
+        if (! Auth::validate($credentials)) {
             RateLimiter::hit($this->throttleKey());
 
             AppLogger::warning('Login failed', [
@@ -54,9 +57,10 @@ class LoginRequest extends FormRequest
             ]);
         }
 
-        if (Auth::user()?->isSuspended()) {
-            Auth::logout();
+        /** @var User $user */
+        $user = Auth::getProvider()->retrieveByCredentials($credentials);
 
+        if ($user->isSuspended()) {
             AppLogger::warning('Suspended user login blocked', [
                 'email' => $this->input('email'),
             ]);
@@ -66,7 +70,11 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        Auth::getProvider()->rehashPasswordIfRequired($user, $credentials);
+
         RateLimiter::clear($this->throttleKey());
+
+        return $user;
     }
 
     /**

@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'Forgot Password | Job4U')
+@section('title', 'Verify Sign In | Job4U')
 
 @section('content')
 <div class="min-h-screen bg-[#eef7f2]">
@@ -16,29 +16,14 @@
             </a>
 
             <h1 class="mt-10 sm:mt-14 text-3xl sm:text-4xl xl:text-5xl font-extrabold leading-tight tracking-tight text-[#1E3A6D]">
-                Regain access in
-                <span class="text-[#55B84D]">a few steps.</span>
+                Confirm it’s
+                <span class="text-[#55B84D]">really you.</span>
             </h1>
 
             <p class="mt-5 text-base text-slate-600 leading-relaxed max-w-md">
-                Enter the email linked to your Job4U account and we will send a secure reset link
-                so you can get back to your opportunities.
+                We emailed a 6-digit verification code to your account address.
+                Enter it below to finish signing in.
             </p>
-
-            <div class="mt-10 space-y-3 max-w-md">
-                <div class="rounded-xl border border-slate-200 bg-white px-4 py-3">
-                    <p class="text-sm font-semibold text-[#1E3A6D]">1. Confirm your email</p>
-                    <p class="mt-1 text-sm text-slate-500">Use the address associated with your account.</p>
-                </div>
-                <div class="rounded-xl border border-slate-200 bg-white px-4 py-3">
-                    <p class="text-sm font-semibold text-[#1E3A6D]">2. Open the reset link</p>
-                    <p class="mt-1 text-sm text-slate-500">Check your inbox for a message from Job4U.</p>
-                </div>
-                <div class="rounded-xl border border-slate-200 bg-white px-4 py-3">
-                    <p class="text-sm font-semibold text-[#1E3A6D]">3. Choose a new password</p>
-                    <p class="mt-1 text-sm text-slate-500">Set a strong password and sign back in.</p>
-                </div>
-            </div>
         </div>
 
         <div class="lg:w-[58%] w-full">
@@ -58,10 +43,11 @@
 
                     <div class="mb-7">
                         <h2 class="text-2xl sm:text-3xl font-extrabold text-[#1E3A6D] tracking-tight">
-                            Forgot password?
+                            Enter verification code
                         </h2>
                         <p class="mt-2 text-sm text-slate-500">
-                            No problem. Enter your email and we will send you a link to reset it.
+                            The code expires in {{ \App\Models\User::TWO_FACTOR_CODE_TTL_MINUTES }} minutes.
+                            Check spam if you do not see the email.
                         </p>
                     </div>
 
@@ -83,47 +69,54 @@
                     @endif
 
                     <form method="POST"
-                          action="{{ route('password.email') }}"
-                          data-loader-message="Sending reset link..."
+                          action="{{ route('login.verify.store') }}"
+                          data-loader-message="Verifying code..."
                           class="space-y-4">
                         @csrf
 
                         <div>
-                            <label for="email" class="block text-sm font-semibold text-slate-700 mb-1.5">
-                                Email Address
+                            <label for="code" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                                Verification code
                             </label>
                             <input
-                                id="email"
-                                type="email"
-                                name="email"
-                                value="{{ old('email') }}"
+                                id="code"
+                                type="text"
+                                name="code"
+                                value="{{ old('code') }}"
                                 required
                                 autofocus
-                                autocomplete="username"
-                                placeholder="name@company.com"
-                                class="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm
-                                       placeholder:text-slate-400
+                                inputmode="numeric"
+                                autocomplete="one-time-code"
+                                maxlength="6"
+                                pattern="[0-9]{6}"
+                                placeholder="------"
+                                class="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-center text-2xl font-extrabold tracking-[0.35em] text-[#1E3A6D]
+                                       placeholder:text-slate-300 placeholder:tracking-[0.35em] placeholder:font-extrabold
                                        focus:border-[#1E3A6D] focus:ring-2 focus:ring-[#1E3A6D]/20 outline-none transition"
                             >
                         </div>
 
                         <button
                             type="submit"
-                            data-loading-text="Sending..."
+                            data-loading-text="Verifying..."
                             class="inline-flex w-full items-center justify-center gap-2 rounded-lg
                                    bg-[#1E3A6D] px-6 py-3.5 text-sm font-bold text-white
                                    hover:bg-blue-800 transition shadow-sm mt-2
                                    disabled:cursor-wait disabled:opacity-80">
-                            Email Reset Link
+                            Verify and continue
                         </button>
                     </form>
 
-                    <p class="mt-6 text-center text-sm text-slate-500">
-                        Remembered your password?
-                        <a href="{{ route('login') }}" class="font-semibold text-[#55B84D] hover:text-[#44963d]">
-                            Sign in
-                        </a>
-                    </p>
+                    <form method="POST"
+                          action="{{ route('login.verify.resend') }}"
+                          data-loader-message="Sending a new code..."
+                          class="mt-4">
+                        @csrf
+                        <button type="submit"
+                                class="w-full text-sm font-semibold text-[#55B84D] hover:text-[#44963d]">
+                            Resend code
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

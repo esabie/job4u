@@ -7,15 +7,22 @@ use App\Notifications\ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    const ROLE_CANDIDATE = 'candidate';
-    const ROLE_EMPLOYER  = 'employer';
-    const ROLE_ADMIN     = 'admin';
+    public const ROLE_CANDIDATE = 'candidate';
+
+    public const ROLE_EMPLOYER = 'employer';
+
+    public const ROLE_ADMIN = 'admin';
+
+    public const TWO_FACTOR_CODE_LENGTH = 6;
+
+    public const TWO_FACTOR_CODE_TTL_MINUTES = 10;
 
     /**
      * The attributes that are mass assignable.
@@ -46,6 +53,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_code',
     ];
 
     /**
@@ -62,6 +70,7 @@ class User extends Authenticatable
             'notify_job_alerts' => 'boolean',
             'notify_new_applications' => 'boolean',
             'is_suspended' => 'boolean',
+            'two_factor_expires_at' => 'datetime',
         ];
     }
 
@@ -83,6 +92,43 @@ class User extends Authenticatable
     public function isSuspended(): bool
     {
         return (bool) $this->is_suspended;
+    }
+
+    /**
+     * Generate and store a hashed email OTP. Returns the plain code for emailing.
+     */
+    public function generateTwoFactorCode(): string
+    {
+        $max = (10 ** self::TWO_FACTOR_CODE_LENGTH) - 1;
+        $code = str_pad((string) random_int(0, $max), self::TWO_FACTOR_CODE_LENGTH, '0', STR_PAD_LEFT);
+
+        $this->forceFill([
+            'two_factor_code' => Hash::make($code),
+            'two_factor_expires_at' => now()->addMinutes(self::TWO_FACTOR_CODE_TTL_MINUTES),
+        ])->save();
+
+        return $code;
+    }
+
+    public function verifyTwoFactorCode(string $code): bool
+    {
+        if (! filled($this->two_factor_code) || $this->two_factor_expires_at === null) {
+            return false;
+        }
+
+        if ($this->two_factor_expires_at->isPast()) {
+            return false;
+        }
+
+        return Hash::check($code, $this->two_factor_code);
+    }
+
+    public function clearTwoFactorCode(): void
+    {
+        $this->forceFill([
+            'two_factor_code' => null,
+            'two_factor_expires_at' => null,
+        ])->save();
     }
 
     public function jobs()

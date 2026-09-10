@@ -3,6 +3,7 @@
 namespace Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
@@ -18,16 +19,23 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register(): void
     {
-        $response = $this->post('/register', [
+        Mail::fake();
+
+        $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'role' => 'employer',
             'password' => 'password',
             'password_confirmation' => 'password',
             'terms' => '1',
-        ]);
+        ])->assertRedirect(route('login.verify'));
+
+        $this->assertGuest();
+
+        $this->post(route('login.verify.store'), [
+            'code' => $this->lastTwoFactorCode(),
+        ])->assertRedirect(route('dashboard', absolute: false));
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
     }
 }
